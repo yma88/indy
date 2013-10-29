@@ -13,7 +13,7 @@ import org.commonjava.aprox.depgraph.conf.AproxDepgraphConfig;
 import org.commonjava.aprox.depgraph.json.DepgraphSerializationAdapter;
 import org.commonjava.aprox.model.io.StoreKeySerializer;
 import org.commonjava.maven.atlas.graph.EGraphManager;
-import org.commonjava.maven.atlas.graph.spi.neo4j.FileNeo4jWorkspaceFactory;
+import org.commonjava.maven.atlas.graph.spi.jung.JungWorkspaceFactory;
 import org.commonjava.maven.cartographer.data.CartoDataManager;
 import org.commonjava.maven.galley.maven.defaults.MavenPluginDefaults;
 import org.commonjava.maven.galley.maven.defaults.MavenPluginImplications;
@@ -56,7 +56,8 @@ public class DepgraphProvider
     @PostConstruct
     public void setup()
     {
-        this.graphs = new EGraphManager( new FileNeo4jWorkspaceFactory( config.getDatabaseDir(), false ) );
+        //        this.graphs = new EGraphManager( new FileNeo4jWorkspaceFactory( config.getDatabaseDir(), false ) );
+        this.graphs = new EGraphManager( new JungWorkspaceFactory() );
         pluginDefaults = new StandardMaven304PluginDefaults();
         pluginImplications = new StandardMavenPluginImplications( xml );
     }

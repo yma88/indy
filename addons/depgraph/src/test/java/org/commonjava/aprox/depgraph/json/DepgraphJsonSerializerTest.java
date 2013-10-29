@@ -2,7 +2,7 @@ package org.commonjava.aprox.depgraph.json;
 
 import org.apache.log4j.Level;
 import org.commonjava.maven.atlas.graph.EGraphManager;
-import org.commonjava.maven.atlas.graph.spi.neo4j.FileNeo4jWorkspaceFactory;
+import org.commonjava.maven.atlas.graph.spi.jung.JungWorkspaceFactory;
 import org.commonjava.maven.atlas.graph.workspace.GraphWorkspace;
 import org.commonjava.maven.atlas.graph.workspace.GraphWorkspaceConfiguration;
 import org.commonjava.maven.cartographer.data.DefaultCartoDataManager;
@@ -41,7 +41,8 @@ public class DepgraphJsonSerializerTest
     @Before
     public void before()
     {
-        graphs = new EGraphManager( new FileNeo4jWorkspaceFactory( temp.newFolder( "db" ), false ) );
+        //        graphs = new EGraphManager( new FileNeo4jWorkspaceFactory( temp.newFolder( "db" ), false ) );
+        graphs = new EGraphManager( new JungWorkspaceFactory() );
         data = new DefaultCartoDataManager( graphs, new GraphWorkspaceHolder(), new NoOpCartoEventManager() );
 
         serializer = new JsonSerializer( new DepgraphSerializationAdapter( data ) );

@@ -222,9 +222,14 @@
         </exclusions>
       </dependency>
       
-      <dependency>
+      <!-- <dependency>
         <groupId>org.commonjava.maven.atlas</groupId>
         <artifactId>atlas-driver-neo4j-embedded</artifactId>
+        <version>${atlasVersion}</version>
+      </dependency> -->
+      <dependency>
+        <groupId>org.commonjava.maven.atlas</groupId>
+        <artifactId>atlas-driver-jung</artifactId>
         <version>${atlasVersion}</version>
       </dependency>
       
@@ -317,12 +322,6 @@
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-core</artifactId>
         <version>1.1</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.commonjava.maven.atlas</groupId>
-        <artifactId>atlas-driver-jung</artifactId>
-        <version>${atlasVersion}</version>
         <scope>test</scope>
       </dependency>
 
