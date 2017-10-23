@@ -17,6 +17,7 @@ package org.commonjava.indy.koji.content;
 
 import com.redhat.red.build.koji.KojiClient;
 import com.redhat.red.build.koji.KojiClientException;
+import com.redhat.red.build.koji.config.KojiConfig;
 import com.redhat.red.build.koji.model.xmlrpc.KojiArchiveInfo;
 import com.redhat.red.build.koji.model.xmlrpc.KojiBuildArchiveCollection;
 import com.redhat.red.build.koji.model.xmlrpc.KojiBuildInfo;
@@ -37,7 +38,9 @@ import org.commonjava.indy.pkg.maven.content.group.MavenMetadataProvider;
 import org.commonjava.indy.subsys.infinispan.CacheHandle;
 import org.commonjava.maven.atlas.ident.ref.InvalidRefException;
 import org.commonjava.maven.atlas.ident.ref.ProjectRef;
+import org.commonjava.maven.atlas.ident.ref.ProjectVersionRef;
 import org.commonjava.maven.atlas.ident.ref.SimpleProjectRef;
+import org.commonjava.maven.atlas.ident.util.ArtifactPathInfo;
 import org.commonjava.maven.atlas.ident.util.VersionUtils;
 import org.commonjava.maven.atlas.ident.version.InvalidVersionSpecificationException;
 import org.commonjava.maven.atlas.ident.version.SingleVersion;
@@ -137,6 +140,14 @@ public class KojiMavenMetadataProvider
         if ( artifactDir == null || groupDir == null )
         {
             logger.debug( "Invalid groupId / artifactId directory structure: '{}' / '{}'", groupDir, artifactDir );
+            return null;
+        }
+
+        // filter out any builds where the GAV doesn't match 'redhat'
+        ArtifactPathInfo artPathInfo = ArtifactPathInfo.parse( path );
+        ProjectVersionRef versionRef = artPathInfo.getProjectId();
+        if ( !IndyKojiConfig.VERSION_FILTER.matcher( versionRef.getVersionString() ).matches())
+        {
             return null;
         }
 

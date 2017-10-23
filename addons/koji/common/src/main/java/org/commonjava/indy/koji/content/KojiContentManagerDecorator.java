@@ -47,6 +47,7 @@ import org.commonjava.indy.subsys.template.IndyGroovyException;
 import org.commonjava.indy.subsys.template.ScriptEngine;
 import org.commonjava.indy.util.LocationUtils;
 import org.commonjava.maven.atlas.ident.ref.ArtifactRef;
+import org.commonjava.maven.atlas.ident.ref.ProjectVersionRef;
 import org.commonjava.maven.atlas.ident.util.ArtifactPathInfo;
 import org.commonjava.maven.galley.event.EventMetadata;
 import org.commonjava.maven.galley.model.ConcreteResource;
@@ -162,6 +163,12 @@ public abstract class KojiContentManagerDecorator
     {
         Logger logger = LoggerFactory.getLogger( getClass() );
         logger.info( "KOJI: Delegating initial existence check for: {}/{}", store.getKey(), path );
+
+        if ( !versionWithRHSigned( path ) )
+        {
+            return false;
+        }
+
         boolean result = delegate.exists( store, path );
         if ( !result && StoreType.group == store.getKey().getType() )
         {
@@ -200,6 +207,12 @@ public abstract class KojiContentManagerDecorator
     {
         Logger logger = LoggerFactory.getLogger( getClass() );
         logger.info( "KOJI: Delegating initial retrieval attempt for: {}/{}", store.getKey(), path );
+
+        if ( !versionWithRHSigned( path ) )
+        {
+            return null;
+        }
+
         Transfer result = delegate.retrieve( store, path, eventMetadata );
         if ( result == null && StoreType.group == store.getKey().getType() )
         {
@@ -254,6 +267,12 @@ public abstract class KojiContentManagerDecorator
     {
         Logger logger = LoggerFactory.getLogger( getClass() );
         logger.info( "KOJI: Delegating initial getTransfer() attempt for: {}/{}", store.getKey(), path );
+
+        if ( !versionWithRHSigned( path ) )
+        {
+            return null;
+        }
+
         Transfer result = delegate.getTransfer( store, path, operation );
         if ( result == null && TransferOperation.DOWNLOAD == operation && StoreType.group == store.getKey().getType() )
         {
@@ -665,6 +684,20 @@ public abstract class KojiContentManagerDecorator
     {
         T execute( StoreKey inStore, ArtifactRef artifactRef, KojiBuildInfo build, KojiSessionInfo session )
                 throws KojiClientException;
+    }
+
+    private boolean versionWithRHSigned ( String path )
+    {
+        boolean pass = false;
+
+        ArtifactPathInfo artPathInfo = ArtifactPathInfo.parse( path );
+        ProjectVersionRef versionRef = artPathInfo.getProjectId();
+
+        if ( IndyKojiConfig.VERSION_FILTER.matcher( versionRef.getVersionString() ).matches())
+        {
+            pass = true;
+        }
+        return pass;
     }
 
 }

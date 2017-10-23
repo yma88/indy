@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.commonjava.util.jhttpc.model.SiteConfig.DEFAULT_CONNECTION_POOL_TIMEOUT_SECONDS;
@@ -51,6 +52,7 @@ public class IndyKojiConfig
         extends MapSectionListener
         implements IndyConfigInfo, KojiConfig
 {
+
     private static final String KOJI_SITE_ID = "koji";
 
     private static final String DEFAULT_CONFIG_FILE_NAME = "default-koji.conf";
@@ -72,6 +74,10 @@ public class IndyKojiConfig
     private static final boolean DEFAULT_TAG_PATTERNS_ENABLED = false;
 
     private static final boolean DEFAULT_PROXY_BINARY_BUILDS = false;
+
+    private static final String regEx = ".[-.]redhat-[0-9]";
+
+    public static final Pattern VERSION_FILTER = Pattern.compile( regEx );
 
     private Boolean enabled;
 
